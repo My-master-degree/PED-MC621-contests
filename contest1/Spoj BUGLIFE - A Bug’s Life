@@ -1,0 +1,65 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <cstdio>
+#include <vector>
+#include <list>
+#include <utility>
+
+using namespace std;
+
+bool check_bipartite(const vector<int>*, int size);
+
+int main()
+{
+	int s;
+	scanf("%d", &s);
+	bool scenarios_result[s];
+	int v1, v2, i, j, num_bugs, num_iterations;
+	for (i = 0; i < s; i++){
+		scanf("%d %d", &num_bugs, &num_iterations);
+		vector<int> adjacencyList[num_bugs];
+		for (j = 0; j < num_iterations; j++){
+			scanf("%d %d", &v1, &v2);
+			adjacencyList[v1 - 1].push_back(v2 - 1);
+			adjacencyList[v2 - 1].push_back(v1 - 1);
+		}
+		scenarios_result[i] = check_bipartite(adjacencyList, num_bugs);
+	}
+	for (i = 0; i < s; i++){
+		printf("Scenario #%d:\n", i + 1);
+		if (scenarios_result[i])
+			printf("No suspicious bugs found!");
+		else
+			printf("Suspicious bugs found!");
+		printf("\n");
+	}
+
+	
+}
+
+bool adaptaded_dfs(int v, const vector<int>* adj, bool* colors[], bool color){
+	if (colors[v] != NULL)
+		return *colors[v] == color;
+	bool new_color = color;
+	colors[v] = &new_color;
+	for (int i = 0; i < adj[v].size(); i++)
+		if (!adaptaded_dfs(adj[v][i], adj, colors, !color))
+			return false;
+	return true;	
+}
+
+bool check_bipartite(const vector<int>* adj, int size){
+	if (size > 1){
+		bool* colors[size];
+		int i;
+		for (i = 0; i < size; i++)
+			colors[i] = NULL;
+		for (i = 0; i < size; i++)
+			if (colors[i] == NULL && !adaptaded_dfs(i, adj, colors, true))
+				return false;
+		
+	}
+	return true;
+}
+
