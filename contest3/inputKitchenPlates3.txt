@@ -1,5 +1,0 @@
-B<A
-D<B
-E<D
-C<E
-B<C
